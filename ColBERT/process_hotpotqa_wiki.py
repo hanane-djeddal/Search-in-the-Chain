@@ -2,7 +2,7 @@ import json
 import bz2
 import os
 import csv
-path = '/hotpotqa/enwiki-20171001-pages-meta-current-withlinks-abstracts'
+path = '/home/djeddal/Documents/Code/ALCE/data/asqa_eval_gtr_top100.json' #'/hotpotqa/enwiki-20171001-pages-meta-current-withlinks-abstracts'
 
 def load_data(path=None):
     assert path

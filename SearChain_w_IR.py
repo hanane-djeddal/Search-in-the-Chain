@@ -1,27 +1,61 @@
-import openai
+#import openai
 import json
 import os
-import string
-import regex
-import time
-from collections import Counter
-import joblib
+#import string
+#import regex
+#import time
+#from collections import Counter
+import argparse
+#import joblib
 from tqdm import tqdm
+from transformers import AutoModelForCausalLM, AutoTokenizer
+import torch
+import datasets
+#import socket
+import sys
 
-import socket
-HOST = '127.0.0.1'
-PORT = 50007
-openai.api_key = 'this is your open ai key'
+ROOT_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), "../..")
+sys.path.append(ROOT_PATH)
 
-def excute(data_path,start_idx):
-    data = open(data_path, 'r')
+from Server.server import Iteractive_Retrieval
+
+os.environ["HTTP_PROXY"] = "http://hacienda:3128"
+os.environ["HTTPS_PROXY"] = "http://hacienda:3128"
+#openai.api_key = 'this is your open ai key'
+LLAMA_PATH = "meta-llama/Llama-2-13b-chat-hf"
+
+device = "cuda" if torch.cuda.is_available() else "cpu"
+
+tokenizer = AutoTokenizer.from_pretrained(LLAMA_PATH)
+model = AutoModelForCausalLM.from_pretrained(
+    LLAMA_PATH,
+    torch_dtype=torch.float16,
+    device_map="auto"
+).to(device)
+
+def generate_llama_response(messages):
+    """Generates a response using LLaMA-2-Chat."""
+    prompt = "\n".join([f"{m['role']}: {m['content']}" for m in messages])
+    inputs = tokenizer(prompt, return_tensors="pt").to(device)
+    #inputs = tokenizer.apply_chat_template(
+    #        messages, add_generation_prompt=True, return_tensors="pt"
+    #)
+    with torch.no_grad():
+        output = model.generate(**inputs, max_length=500)
+
+    response = tokenizer.decode(output[0], skip_special_tokens=True)
+    return response
+
+def excute(data,start_idx,reranker="GTR"):
+    #data = open(data_path, 'r')
+    interactive_ret=Iteractive_Retrieval(reranker=reranker)
     for k, example in enumerate(data):
         if k < start_idx:
             continue
         print(k)
-        example = json.loads(example)
-        q = example['question']
-        answer = example['answer']
+        #example = json.loads(example)
+        q = example["query"]#['question']
+        answer = example["answers"][0]["answer"]#['answer']
         round_count = 0
         message_keys_list = [{"role": "user", "content":
                     """Construct a global reasoning chain for this complex [Question] : " {} " You should generate a query to the search engine based on
@@ -63,24 +97,25 @@ def excute(data_path,start_idx):
                     """.format(q,q)}]
         feedback_answer = 'continue'
         predict_answer = ''
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.connect((HOST, PORT))
+        # sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        # sock.connect((HOST, PORT))
         while round_count < 5 and not feedback_answer == 'end':
             print('round is {}'.format(round_count))
             try:
-                time.sleep(0.5)
-                rsp = openai.ChatCompletion.create(
-                model="gpt-3.5-turbo",
-                messages=message_keys_list
-                )
+                #time.sleep(0.5)
+                rsp_text =  generate_llama_response(message_keys_list) 
+                #openai.ChatCompletion.create(
+                #model="gpt-3.5-turbo",
+                #messages=message_keys_list
+                #)
                 round_count += 1
-                input_str = rsp.get("choices")[0]["message"]["content"]
-                message_keys_list.append({"role": "assistant", "content": input_str})
+                #input_str = rsp.get("choices")[0]["message"]["content"]
+                message_keys_list.append({"role": "assistant", "content": rsp_text})
                 print('solving......')
-                predict_answer += input_str
-                sock.send(input_str.encode())
-                print('send message {}'.format(input_str))
-                feedback = sock.recv(10240).decode()
+                predict_answer += rsp_text #input_str
+                feedback = interactive_ret.interctive_retrieve(rsp_text)  #sock.send(rsp_text.encode())
+                print('send message {}'.format(rsp_text))
+                #feedback = sock.recv(10240).decode()
                 print('feedback is '+feedback)
                 if feedback == 'end':
                     break
@@ -101,18 +136,28 @@ def excute(data_path,start_idx):
                 message_keys_list.append({"role": "user", "content":new_prompt})
             except:
                 print('start_idx is {}'.format(k))
-                sock.send('end'.encode())
-                sock.close()
+                #sock.send('end'.encode())
+                #sock.close()
                 return k
-        if not feedback_answer == 'end':
-            sock.send('end'.encode())
-        sock.close()
+        #if not feedback_answer == 'end':
+            #sock.send('end'.encode())
+        #sock.close()
         print(message_keys_list)
 
     return -1
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--reranker", type=str, default="GTR", choices=["GTR", "MonoT5"])
+    parser.add_argument("--dataset", type=str, default="hagrid", choices=["hagrid", "asqa"])
+    parser.add_argument("--file", type=str, default=None)
+    args = parser.parse_args()
+
+    if args.dataset == "hagrid":
+        dataset = datasets.load_dataset("miracl/hagrid", split="dev")
+    else:
+        with open(args.data_file) as f:
+            dataset = json.load(f)
     start_idx = 0
     while not start_idx == -1:
-        start_idx = excute('/hotpotqa/hotpot_dev_fullwiki_v1_line.json',
-               start_idx=start_idx)
+        start_idx = excute( dataset, start_idx=start_idx, reranker= args.reranker) # '/hotpotqa/hotpot_dev_fullwiki_v1_line.json',

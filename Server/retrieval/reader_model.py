@@ -1,9 +1,9 @@
 from transformers import DPRReader, DPRReaderTokenizer
 import pathlib, os
-os.environ["CUDA_VISIBLE_DEVICES"] = '1'
+#os.environ["CUDA_VISIBLE_DEVICES"] = '1'
 device = "cuda"
-tokenizer = DPRReaderTokenizer.from_pretrained("/dpr_reader_multi")
-model = DPRReader.from_pretrained("/dpr_reader_multi")
+tokenizer = DPRReaderTokenizer.from_pretrained("facebook/dpr-reader-multiset-base")
+model = DPRReader.from_pretrained("facebook/dpr-reader-multiset-base")
 model.eval()
 model.to(device)
 
