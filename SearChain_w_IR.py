@@ -102,45 +102,46 @@ def excute(data,start_idx,reranker="GTR"):
         # sock.connect((HOST, PORT))
         while round_count < 5 and not feedback_answer == 'end':
             print('round is {}'.format(round_count))
-            try:
-                #time.sleep(0.5)
-                rsp_text =  generate_llama_response(message_keys_list) 
-                #openai.ChatCompletion.create(
-                #model="gpt-3.5-turbo",
-                #messages=message_keys_list
-                #)
-                round_count += 1
-                #input_str = rsp.get("choices")[0]["message"]["content"]
-                message_keys_list.append({"role": "assistant", "content": rsp_text})
-                print('solving......')
-                predict_answer += rsp_text #input_str
-                feedback = interactive_ret.interctive_retrieve(rsp_text)  #sock.send(rsp_text.encode())
-                print('send message {}'.format(rsp_text))
-                #feedback = sock.recv(10240).decode()
-                print('feedback is '+feedback)
-                if feedback == 'end':
-                    break
-                #[Query]:xxxx<SEP>[Answer]:xxxx<SEP>[Reference]:xxxx<SEP>
-                feedback_list = feedback.split('<SEP>')
-                if not 'Unsolved Query' in feedback:
-                    new_prompt = """
-                    According to this Reference, the answer for "{}" should be "{}",  
-                    you can change your answer based on the Reference and continue constructing the reasoning chain to give the final answer for [Question]:{}
-                    Reference: {}
-                    """.format(feedback_list[0],feedback_list[1],q,feedback_list[2])
-                else:
-                    new_prompt = """
-                    According to this Reference, the answer for "{}" should be "{}",  
-                    you can give your answer based on the Reference and continue constructing the reasoning chain to give the final answer for [Question]：{}
-                    Reference: {}
-                    """.format(feedback_list[0],feedback_list[1],q,feedback_list[2])
-                message_keys_list.append({"role": "user", "content":new_prompt})
-            except  Exception as e:
-                print(e)
-                print('start_idx is {}'.format(k))
-                #sock.send('end'.encode())
-                #sock.close()
-                return k
+            #try:
+            #time.sleep(0.5)
+            round_count += 1
+            rsp_text =  generate_llama_response(message_keys_list) 
+            #openai.ChatCompletion.create(
+            #model="gpt-3.5-turbo",
+            #messages=message_keys_list
+            #)
+            #input_str = rsp.get("choices")[0]["message"]["content"]
+            rsp_text=rsp_text.replace(message_keys_list[0],"")
+            message_keys_list.append({"role": "assistant", "content": rsp_text})
+            print('solving......')
+            predict_answer += rsp_text #input_str
+            feedback = interactive_ret.interctive_retrieve(rsp_text)  #sock.send(rsp_text.encode())
+            print('send message {}'.format(rsp_text))
+            #feedback = sock.recv(10240).decode()
+            print('feedback is '+feedback)
+            if feedback == 'end':
+                break
+            #[Query]:xxxx<SEP>[Answer]:xxxx<SEP>[Reference]:xxxx<SEP>
+            feedback_list = feedback.split('<SEP>')
+            if not 'Unsolved Query' in feedback:
+                new_prompt = """
+                According to this Reference, the answer for "{}" should be "{}",  
+                you can change your answer based on the Reference and continue constructing the reasoning chain to give the final answer for [Question]:{}
+                Reference: {}
+                """.format(feedback_list[0],feedback_list[1],q,feedback_list[2])
+            else:
+                new_prompt = """
+                According to this Reference, the answer for "{}" should be "{}",  
+                you can give your answer based on the Reference and continue constructing the reasoning chain to give the final answer for [Question]：{}
+                Reference: {}
+                """.format(feedback_list[0],feedback_list[1],q,feedback_list[2])
+            message_keys_list.append({"role": "user", "content":new_prompt})
+            # except  Exception as e:
+            #     print(e)
+            #     print('start_idx is {}'.format(k))
+            #     #sock.send('end'.encode())
+            #     #sock.close()
+            #     return k
         #if not feedback_answer == 'end':
             #sock.send('end'.encode())
         #sock.close()

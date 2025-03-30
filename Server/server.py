@@ -313,7 +313,7 @@ class Iteractive_Retrieval:
                             corpus_list_topk,docids =self.retrieve_docs(query_item)
                                 
                             print(corpus_list_topk)
-                            top1_passage = corpus_list_topk[0]['text']
+                            top1_passage = corpus_list_topk[0]#['text']
                             #top1_passage = retrieval_model_hotpotqa.rerank_topk_colbert(corpus_list_topk, query_item)
                             answer,relevance_score = get_answer(query=query_item,texts='',title=top1_passage)
                             now_reference['query'] = query_item
