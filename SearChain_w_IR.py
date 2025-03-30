@@ -54,7 +54,7 @@ def generate_llama_response(messages):
         max_new_tokens=500,
     )
     returned = tokenizer.decode(tokens[0], skip_special_tokens=True)
-    keyword = "<|assistant|>"
+    keyword = "[/INST]" #"<|assistant|>"
     filetred_answer = returned
     if keyword in returned:
         start_index = returned.index(keyword)
