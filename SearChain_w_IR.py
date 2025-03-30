@@ -49,6 +49,7 @@ def generate_llama_response(messages):
 def excute(data,start_idx,reranker="GTR"):
     #data = open(data_path, 'r')
     interactive_ret=Iteractive_Retrieval(reranker=reranker)
+    results = []
     for k, example in enumerate(data):
         if k < start_idx:
             continue
@@ -134,7 +135,8 @@ def excute(data,start_idx,reranker="GTR"):
                     Reference: {}
                     """.format(feedback_list[0],feedback_list[1],q,feedback_list[2])
                 message_keys_list.append({"role": "user", "content":new_prompt})
-            except:
+            except  Exception as e:
+                print(e)
                 print('start_idx is {}'.format(k))
                 #sock.send('end'.encode())
                 #sock.close()
