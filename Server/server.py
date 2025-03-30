@@ -258,7 +258,7 @@ class Iteractive_Retrieval:
             return self.rerank_docx(question, k,docs)
         return self.retrieve_docx(question,k)  # google(question) #
     
-    def interctive_retrieve(self, query):
+    def interctive_retrieve(self, query,prompt_queries=[]):
         print('Loading data....')
         #HOST = "127.0.0.1"#'10.208.62.21'
         #PORT = 8#50007
@@ -273,7 +273,7 @@ class Iteractive_Retrieval:
         #start_idx = 0
         with torch.no_grad():
             continue_label = True
-            query_seen_list = []
+            query_seen_list = prompt_queries #[]
             start = True
             break_flag = False
             while continue_label:

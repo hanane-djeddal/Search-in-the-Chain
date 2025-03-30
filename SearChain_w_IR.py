@@ -58,6 +58,8 @@ def excute(data,start_idx,reranker="GTR"):
         q = example["query"]#['question']
         answer = example["answers"][0]["answer"]#['answer']
         round_count = 0
+        example_queries = ["Where do greyhound buses that are in the birthplace of Spirit If...'s performer leave from? ","Who is the performer of Spirit If... ?",
+                            "Where was Kevin Drew born? ","Where do greyhound buses in Toronto leave from? ","When was Arthur’s Magazine started? ","Which magazine was started first Arthur’s Magazine or First for Women?",]
         message_keys_list = [{"role": "user", "content":
                     """Construct a global reasoning chain for this complex [Question] : " {} " You should generate a query to the search engine based on
                         what you already know at each step of the reasoning chain, starting with [Query].
@@ -116,7 +118,7 @@ def excute(data,start_idx,reranker="GTR"):
             message_keys_list.append({"role": "assistant", "content": rsp_text})
             print('solving......')
             predict_answer += rsp_text #input_str
-            feedback = interactive_ret.interctive_retrieve(rsp_text)  #sock.send(rsp_text.encode())
+            feedback = interactive_ret.interctive_retrieve(rsp_text,prompt_queries=example_queries)  #sock.send(rsp_text.encode())
             print('send message {}'.format(rsp_text))
             #feedback = sock.recv(10240).decode()
             print('feedback is '+feedback)
