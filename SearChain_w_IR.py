@@ -111,7 +111,8 @@ def excute(data,start_idx,reranker="GTR"):
             #messages=message_keys_list
             #)
             #input_str = rsp.get("choices")[0]["message"]["content"]
-            rsp_text=rsp_text.replace(message_keys_list[0],"")
+            for m in message_keys_list:
+                rsp_text=rsp_text.replace(m["content"],"")
             message_keys_list.append({"role": "assistant", "content": rsp_text})
             print('solving......')
             predict_answer += rsp_text #input_str
