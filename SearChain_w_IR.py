@@ -35,11 +35,11 @@ model = AutoModelForCausalLM.from_pretrained(
 
 def generate_llama_response(messages):
     """Generates a response using LLaMA-2-Chat."""
-    prompt = "\n".join([f"{m['role']}: {m['content']}" for m in messages])
-    inputs = tokenizer(prompt, return_tensors="pt").to(device)
-    #inputs = tokenizer.apply_chat_template(
-    #        messages, add_generation_prompt=True, return_tensors="pt"
-    #)
+    # prompt = "\n".join([f"{m['role']}: {m['content']}" for m in messages])
+    # inputs = tokenizer(prompt, return_tensors="pt").to(device)
+    inputs = tokenizer.apply_chat_template(
+           messages, add_generation_prompt=True, return_tensors="pt"
+    )
     with torch.no_grad():
         output = model.generate(**inputs, max_length=500)
 
