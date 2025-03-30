@@ -41,7 +41,7 @@ def generate_llama_response(messages):
            messages, add_generation_prompt=True, return_tensors="pt"
     )
     with torch.no_grad():
-        output = model.generate(**inputs, max_length=500)
+        output = model.generate(inputs.to(model.device), max_length=500)
 
     response = tokenizer.decode(output[0], skip_special_tokens=True)
     return response
