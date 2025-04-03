@@ -164,6 +164,7 @@ def excute(data,start_idx,reranker="GTR"):
             #sock.send('end'.encode())
         #sock.close()
         print(message_keys_list)
+        print("==== predicted answer:", predict_answer)
 
     return -1
 
