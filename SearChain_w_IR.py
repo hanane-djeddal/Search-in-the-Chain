@@ -176,7 +176,7 @@ if __name__ == '__main__':
     parser.add_argument("--reranker", type=str, default="GTR", choices=["GTR", "MonoT5"])
     parser.add_argument("--dataset", type=str, default="hagrid", choices=["hagrid", "asqa"])
     parser.add_argument("--file", type=str, default=None)
-    parser.add_argument("--result_file", type=str, default="results")
+    parser.add_argument("--result_file", type=str, default="hagrid_results.json")
     args = parser.parse_args()
 
     if args.dataset == "hagrid":
