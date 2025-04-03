@@ -357,8 +357,12 @@ class Iteractive_Retrieval:
                                     print(message)
                                     continue_label = True
                                     break
-                if not break_flag:
-                    ques_idx += 1
+                if continue_label:
+                    return message
+                else:
+                    return "end"
+            if not break_flag:
+                ques_idx += 1
 
 # if __name__ == '__main__':
 #     import socket
