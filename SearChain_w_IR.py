@@ -165,14 +165,18 @@ def excute(data,start_idx,reranker="GTR"):
         #sock.close()
         print(message_keys_list)
         print("==== predicted answer:", predict_answer)
+        example["output"] = predict_answer
+        example["message"] = message_keys_list
+        results.append(example)
 
-    return -1
+    return results
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--reranker", type=str, default="GTR", choices=["GTR", "MonoT5"])
     parser.add_argument("--dataset", type=str, default="hagrid", choices=["hagrid", "asqa"])
     parser.add_argument("--file", type=str, default=None)
+    parser.add_argument("--result_file", type=str, default="results")
     args = parser.parse_args()
 
     if args.dataset == "hagrid":
@@ -181,5 +185,11 @@ if __name__ == '__main__':
         with open(args.data_file) as f:
             dataset = json.load(f)
     start_idx = 0
-    while not start_idx == -1:
-        start_idx = excute( dataset, start_idx=start_idx, reranker= args.reranker) # '/hotpotqa/hotpot_dev_fullwiki_v1_line.json',
+    #while not start_idx == -1:
+    results = excute( dataset, start_idx=start_idx, reranker= args.reranker) # '/hotpotqa/hotpot_dev_fullwiki_v1_line.json',
+    print(json.dumps(results, indent = 4))
+
+    print(f"Saving results to {args.result_file}")
+    new_set={"data":results, "params":vars(args)}
+    with open(args.result_file, "w") as f:
+        json.dump(new_set, f, indent=4)
