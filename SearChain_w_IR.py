@@ -61,13 +61,22 @@ def generate_llama_response(messages):
         filetred_answer = returned[start_index + len(keyword) :]
     return filetred_answer
 
-def excute(data,start_idx,reranker="GTR"):
+def excute(data,start_idx,reranker="GTR",resume_from_file=None):
     #data = open(data_path, 'r')
     interactive_ret=Iteractive_Retrieval(reranker=reranker)
-    results = []
+    start_idx = 0
+    if args.resume_from_file:
+        with open(args.resume_from_file) as f:
+            data_with_config = json.load(f)
+        results = data_with_config["data"]
+        start_idx = len(results)
+        print("Resuming test from file:",args.resume_from_file)
+        print("Starting Iteration:",start_idx)
+    else:
+        results = []
     for k, example in enumerate(data):
         if k < start_idx:
-            continue
+            continue 
         print(k)
         #example = json.loads(example)
         q = example["query"]#['question']
@@ -117,7 +126,7 @@ def excute(data,start_idx,reranker="GTR"):
         predict_answer = ''
         # sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         # sock.connect((HOST, PORT))
-        while round_count < 5 and not feedback_answer == 'end':
+        while round_count < 4 and not feedback_answer == 'end':
             print('round is {}'.format(round_count))
             #try:
             #time.sleep(0.5)
@@ -163,11 +172,17 @@ def excute(data,start_idx,reranker="GTR"):
         #if not feedback_answer == 'end':
             #sock.send('end'.encode())
         #sock.close()
-        print(message_keys_list)
+        #print(message_keys_list)
         print("==== predicted answer:", predict_answer)
         example["output"] = predict_answer
         example["message"] = message_keys_list
         results.append(example)
+
+        if (k+1) % 25 == 0:
+            results_df = {"data": results}
+            results_file = "intr_testHagrid_"+str(k)+"_iter.json"  # "agent_hagrid_3doc_2rounds.csv"
+            with open(results_file, "w") as writer:
+                json.dump(results_df, writer)
 
     return results
 
@@ -177,6 +192,7 @@ if __name__ == '__main__':
     parser.add_argument("--dataset", type=str, default="hagrid", choices=["hagrid", "asqa"])
     parser.add_argument("--file", type=str, default=None)
     parser.add_argument("--result_file", type=str, default="hagrid_results.json")
+    parser.add_argument("--resume_from_file", type=str, default=None)
     args = parser.parse_args()
 
     if args.dataset == "hagrid":
@@ -186,7 +202,8 @@ if __name__ == '__main__':
             dataset = json.load(f)
     start_idx = 0
     #while not start_idx == -1:
-    results = excute( dataset, start_idx=start_idx, reranker= args.reranker) # '/hotpotqa/hotpot_dev_fullwiki_v1_line.json',
+ 
+    results = excute( dataset, start_idx=start_idx, reranker= args.reranker,resume_from_file=args.resume_from_file) # '/hotpotqa/hotpot_dev_fullwiki_v1_line.json',
     print(json.dumps(results, indent = 4))
 
     print(f"Saving results to {args.result_file}")
