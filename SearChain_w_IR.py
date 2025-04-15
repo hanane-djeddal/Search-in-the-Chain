@@ -143,7 +143,7 @@ def excute(data,start_idx,reranker="GTR",resume_from_file=None):
             print('solving......')
             predict_answer += rsp_text #input_str
             feedback, query_seen_list = interactive_ret.interctive_retrieve(rsp_text,prompt_queries=example_queries)  #sock.send(rsp_text.encode())
-            print("query_seen_list",query_seen_list)
+            print("query_seen_list",query_seen_list,example_queries)
             example_queries = example_queries.extend(query_seen_list)
             print('send message {}'.format(rsp_text))
             #feedback = sock.recv(10240).decode()
@@ -180,7 +180,7 @@ def excute(data,start_idx,reranker="GTR",resume_from_file=None):
         example["message"] = message_keys_list
         results.append(example)
 
-        if (k+1) % 20 == 0:
+        if (k+1) % 25 == 0:
             results_df = {"data": results}
             results_file = "intr_testHagrid_"+str(k)+"_iter.json"  # "agent_hagrid_3doc_2rounds.csv"
             with open(results_file, "w") as writer:
