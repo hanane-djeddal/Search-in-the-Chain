@@ -50,6 +50,7 @@ def generate_llama_response(messages):
         add_generation_prompt=True,
         return_tensors="pt",
     )
+    inputs = inputs.to(model.device) 
     tokens = model.generate(
         inputs.to(model.device),
         max_new_tokens=500,
