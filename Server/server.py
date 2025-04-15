@@ -230,8 +230,8 @@ def match_or_not(prediction, ground_truth):
 
 
 def have_seen_or_not(query_item,query_seen_list,query_type):
-    if 'Unsolved' in query_type:
-        return False
+    #if 'Unsolved' in query_type:
+        #return False
     for query_seen in query_seen_list:
         if model_cross_encoder.predict([(query_seen, query_item)]) > 0.5:
             return True

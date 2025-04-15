@@ -126,7 +126,7 @@ def excute(data,start_idx,reranker="GTR",resume_from_file=None):
         predict_answer = ''
         # sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         # sock.connect((HOST, PORT))
-        while round_count < 4 and not feedback_answer == 'end':
+        while round_count < 3 and not feedback_answer == 'end':
             print('round is {}'.format(round_count))
             #try:
             #time.sleep(0.5)
