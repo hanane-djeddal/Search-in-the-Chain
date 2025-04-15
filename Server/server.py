@@ -272,7 +272,7 @@ class Iteractive_Retrieval:
         good_cite = 0
         dic_question_answer_to_reference = []
         ques_idx = 0
-        docs = []
+        retrieved_docs = []
         #start_idx = 0
         with torch.no_grad():
             continue_label = True
@@ -325,9 +325,10 @@ class Iteractive_Retrieval:
                             now_reference['query'] = query_item
                             now_reference['answer'] = answer
                             now_reference['reference'] = top1_passage
-                            now_reference['ref_score'] = relevance_score
+                            #now_reference['ref_score'] = relevance_score
                             now_reference['idx'] = ques_idx
                             dic_question_answer_to_reference.append(now_reference)
+                            retrieved_docs.append(top1_passage)
 
                             print('answer is '+answer)
                             print('reference is'+top1_passage)
@@ -337,7 +338,7 @@ class Iteractive_Retrieval:
                             if 'Unsolved' in query_type:
                                 message = '[Unsolved Query]:{}<SEP>[Answer]:{}<SEP>[{}][Reference]:{}<SEP>'.format(query_item,
                                                                                                                 answer,
-                                                                                                                str(len(docs)-1),
+                                                                                                                str(len(retrieved_docs)-1),
                                                                                                                 top1_passage)
                                 print(message)
                                 continue_label = True
@@ -360,15 +361,15 @@ class Iteractive_Retrieval:
                                 else:
                                     message = '[Query]:{}<SEP>[Answer]:{}<SEP>[{}][Reference]:{}<SEP>'.format(query_item,
                                                                                                 answer,
-                                                                                                str(len(docs)-1),
+                                                                                                str(len(retrieved_docs)-1),
                                                                                                 top1_passage)
                                     print(message)
                                     continue_label = True
                                     break
                 if continue_label:
-                    return message, query_seen_list,docs,dic_question_answer_to_reference
+                    return message, query_seen_list,retrieved_docs
                 else:
-                    return "end", query_seen_list,docs,dic_question_answer_to_reference
+                    return "end", query_seen_list,retrieved_docs
             if not break_flag:
                 ques_idx += 1
 
