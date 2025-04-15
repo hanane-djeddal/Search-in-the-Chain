@@ -179,7 +179,7 @@ def excute(data,start_idx,reranker="GTR",resume_from_file=None):
         example["message"] = message_keys_list
         results.append(example)
 
-        if (k+1) % 25 == 0:
+        if (k+1) % 20 == 0:
             results_df = {"data": results}
             results_file = "intr_testHagrid_"+str(k)+"_iter.json"  # "agent_hagrid_3doc_2rounds.csv"
             with open(results_file, "w") as writer:
