@@ -326,7 +326,8 @@ class Iteractive_Retrieval:
                             now_reference['ref_score'] = relevance_score
                             now_reference['idx'] = ques_idx
                             dic_question_answer_to_reference.append(now_reference)
-
+                            docs.append(top1_passage)
+                            
                             print('answer is '+answer)
                             print('reference is'+top1_passage)
                             print('score is {}'.format(relevance_score))
@@ -335,7 +336,7 @@ class Iteractive_Retrieval:
                             if 'Unsolved' in query_type:
                                 message = '[Unsolved Query]:{}<SEP>[Answer]:{}<SEP>[{}][Reference]:{}<SEP>'.format(query_item,
                                                                                                                 answer,
-                                                                                                                str(len(docs)-1),
+                                                                                                                str(len(docs)),
                                                                                                                 top1_passage)
                                 print(message)
                                 continue_label = True
@@ -358,7 +359,7 @@ class Iteractive_Retrieval:
                                 else:
                                     message = '[Query]:{}<SEP>[Answer]:{}<SEP>[{}][Reference]:{}<SEP>'.format(query_item,
                                                                                                 answer,
-                                                                                                str(len(docs)-1),
+                                                                                                str(len(docs)),
                                                                                                 top1_passage)
                                     print(message)
                                     continue_label = True

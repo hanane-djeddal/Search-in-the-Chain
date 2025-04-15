@@ -149,9 +149,8 @@ def excute(data,start_idx,reranker="GTR",resume_from_file=None):
             feedback, query_seen_list,docs,intermediate = interactive_ret.interctive_retrieve(rsp_text,prompt_queries=deepcopy(example_queries))  #sock.send(rsp_text.encode())
             all_docs.append(docs)
             all_intermediates.append(intermediate)
-            print("query_seen_list",query_seen_list,example_queries)
-            if example_queries and query_seen_list:
-                example_queries = list(set(example_queries.extend(query_seen_list)))
+            example_queries.extend(query_seen_list)
+            example_queries = list(set(example_queries))
             print('send message {}'.format(rsp_text))
             #feedback = sock.recv(10240).decode()
             print('feedback is '+feedback)
