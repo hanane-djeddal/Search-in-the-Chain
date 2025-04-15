@@ -63,7 +63,7 @@ def generate_llama_response(messages):
         filetred_answer = returned[start_index + len(keyword) :]
     return filetred_answer
 
-def excute(data,start_idx,reranker="GTR",resume_from_file=None):
+def excute(data,start_idx,reranker="GTR",resume_from_file=None,dataset="hagrid"):
     #data = open(data_path, 'r')
     interactive_ret=Iteractive_Retrieval(reranker=reranker)
     start_idx = 0
@@ -146,7 +146,11 @@ def excute(data,start_idx,reranker="GTR",resume_from_file=None):
             message_keys_list.append({"role": "assistant", "content": rsp_text})
             print('solving......')
             predict_answer += rsp_text #input_str
-            feedback, query_seen_list,docs,intermediate = interactive_ret.interctive_retrieve(rsp_text,prompt_queries=deepcopy(example_queries))  #sock.send(rsp_text.encode())
+            if dataset == "asqa":
+                docs= example["docs"]
+            else:
+                docs=None
+            feedback, query_seen_list,docs,intermediate = interactive_ret.interctive_retrieve(rsp_text,prompt_queries=deepcopy(example_queries),docs=docs)  #sock.send(rsp_text.encode())
             all_docs.append(docs)
             all_intermediates.append(intermediate)
             print("query_seen_list",query_seen_list,example_queries)
@@ -160,6 +164,7 @@ def excute(data,start_idx,reranker="GTR",resume_from_file=None):
             #[Query]:xxxx<SEP>[Answer]:xxxx<SEP>[Reference]:xxxx<SEP>
             feedback_list = feedback.split('<SEP>')
             if not 'Unsolved Query' in feedback:
+                feedback_list[0]=feedback_list[0].replace('Unsolved Query','Query')
                 new_prompt = """
                 According to this Reference, the answer for "{}" should be "{}",  
                 you can change your answer based on the Reference and continue constructing the reasoning chain to give the final answer for [Question]:{}
@@ -214,7 +219,7 @@ if __name__ == '__main__':
     start_idx = 0
     #while not start_idx == -1:
  
-    results = excute( dataset, start_idx=start_idx, reranker= args.reranker,resume_from_file=args.resume_from_file) # '/hotpotqa/hotpot_dev_fullwiki_v1_line.json',
+    results = excute( dataset, start_idx=start_idx, reranker= args.reranker,resume_from_file=args.resume_from_file,dataset=args.dataset) # '/hotpotqa/hotpot_dev_fullwiki_v1_line.json',
     print(json.dumps(results, indent = 4))
 
     print(f"Saving results to {args.result_file}")
