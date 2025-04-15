@@ -1,0 +1,41 @@
+{
+    "Bleu ": {
+        "Precision": 3.88,
+        "1g": 10.67,
+        "2g": 4.65,
+        "3g": 2.66,
+        "4g": 1.71
+    },
+    "Bleu All": {
+        "Precision": 4.64,
+        "1g": 12.3,
+        "2g": 5.55,
+        "3g": 3.22,
+        "4g": 2.11
+    },
+    "Rouge": {
+        "Precision": 36.46,
+        "Recall": 39.02,
+        "fmeasure": 30.53
+    },
+    "Bert": {
+        "Precision": 88.15,
+        "Recall": 87.66,
+        "fmeasure": 87.84
+    },
+    "Aggregated Rouge": {
+        "Precision": 30.48,
+        "Recall": 30.48,
+        "fmeasure": 30.48
+    },
+    "Rouge All": {
+        "Precision": 37.73,
+        "Recall": 43.79,
+        "fmeasure": 34.12
+    },
+    "Bert All": {
+        "Precision": 88.52,
+        "Recall": 88.92,
+        "fmeasure": 88.66
+    }
+}
