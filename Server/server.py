@@ -367,9 +367,9 @@ class Iteractive_Retrieval:
                                     continue_label = True
                                     break
                 if continue_label:
-                    return message, query_seen_list,retrieved_docs
+                    return message, query_seen_list,retrieved_docs,dic_question_answer_to_reference
                 else:
-                    return "end", query_seen_list,retrieved_docs
+                    return "end", query_seen_list,retrieved_docs,dic_question_answer_to_reference
             if not break_flag:
                 ques_idx += 1
 
