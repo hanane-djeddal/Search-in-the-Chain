@@ -1,6 +1,7 @@
 #import openai
 import json
 import os
+from copy import deepcopy
 #import string
 #import regex
 #import time
@@ -142,9 +143,9 @@ def excute(data,start_idx,reranker="GTR",resume_from_file=None):
             message_keys_list.append({"role": "assistant", "content": rsp_text})
             print('solving......')
             predict_answer += rsp_text #input_str
-            feedback, query_seen_list = interactive_ret.interctive_retrieve(rsp_text,prompt_queries=example_queries)  #sock.send(rsp_text.encode())
+            feedback, query_seen_list = interactive_ret.interctive_retrieve(rsp_text,prompt_queries=deepcopy(example_queries))  #sock.send(rsp_text.encode())
             print("query_seen_list",query_seen_list,example_queries)
-            example_queries = example_queries.extend(query_seen_list)
+            example_queries = list(set(example_queries.extend(query_seen_list)))
             print('send message {}'.format(rsp_text))
             #feedback = sock.recv(10240).decode()
             print('feedback is '+feedback)
