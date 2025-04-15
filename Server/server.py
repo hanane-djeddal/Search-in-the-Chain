@@ -358,9 +358,9 @@ class Iteractive_Retrieval:
                                     continue_label = True
                                     break
                 if continue_label:
-                    return message
+                    return message, query_seen_list
                 else:
-                    return "end"
+                    return "end", query_seen_list
             if not break_flag:
                 ques_idx += 1
 
