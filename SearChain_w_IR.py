@@ -162,7 +162,7 @@ def excute(data,start_idx,reranker="GTR",resume_from_file=None,dataset="hagrid")
                 break
             #[Query]:xxxx<SEP>[Answer]:xxxx<SEP>[Reference]:xxxx<SEP>
             feedback_list = feedback.split('<SEP>')
-            if not 'Unsolved Query' in feedback:
+            if not 'Unsolved Query' in feedback[0]:
                 feedback_list[0]=feedback_list[0].replace('Unsolved Query','Query')
                 print("edit:",feedback_list[0])
                 new_prompt = """
@@ -194,7 +194,7 @@ def excute(data,start_idx,reranker="GTR",resume_from_file=None,dataset="hagrid")
         example["message"] = message_keys_list
         results.append(example)
 
-        if (k+1) % 0 == 0:
+        if (k+1) % 25 == 0:
             results_df = {"data": results}
             results_file = "intr_testHagrid_"+str(k)+"_iter.json"  # "agent_hagrid_3doc_2rounds.csv"
             with open(results_file, "w") as writer:
