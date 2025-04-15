@@ -2,12 +2,11 @@
 #SBATCH --job-name=a100_hagrid_searchinchain ###contrastivesearch_p4 ### diversity_sampling_querycontinue
 #SBATCH --output=jz_%j_%x.out    # nom du fichier de sortie
 #SBATCH --error=errjz_%j_%x.out  
-#SBATCH --gres=gpu:8   #for v account max is 4  
-#SBATCH --qos=qos_gpu_a100-dev
+#SBATCH --gres=gpu:8   #for v account max is 4  #SBATCH --qos=qos_gpu_a100-dev
 #SBATCH --ntasks-per-node=1
 #SBATCH --nodes=1
 #SBATCH --hint=nomultithread
-#SBATCH --time=2:00:00
+#SBATCH --time=20:00:00
 #SBATCH --constraint=a100
 #SBATCH --cpus-per-task=30
 #SBATCH --account=fiz@a100
