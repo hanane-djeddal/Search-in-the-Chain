@@ -270,6 +270,7 @@ class Iteractive_Retrieval:
         good_cite = 0
         dic_question_answer_to_reference = []
         ques_idx = 0
+        docs = []
         #start_idx = 0
         with torch.no_grad():
             continue_label = True
@@ -332,8 +333,9 @@ class Iteractive_Retrieval:
                             sum_cite += 1
                             print('query_type is '+query_type)
                             if 'Unsolved' in query_type:
-                                message = '[Unsolved Query]:{}<SEP>[Answer]:{}<SEP>[Reference]:{}<SEP>'.format(query_item,
+                                message = '[Unsolved Query]:{}<SEP>[Answer]:{}<SEP>[{}][Reference]:{}<SEP>'.format(query_item,
                                                                                                                 answer,
+                                                                                                                str(len(docs)-1),
                                                                                                                 top1_passage)
                                 print(message)
                                 continue_label = True
@@ -354,16 +356,17 @@ class Iteractive_Retrieval:
                                 if match_label:
                                     continue
                                 else:
-                                    message = '[Query]:{}<SEP>[Answer]:{}<SEP>[Reference]:{}<SEP>'.format(query_item,
+                                    message = '[Query]:{}<SEP>[Answer]:{}<SEP>[{}][Reference]:{}<SEP>'.format(query_item,
                                                                                                 answer,
+                                                                                                str(len(docs)-1),
                                                                                                 top1_passage)
                                     print(message)
                                     continue_label = True
                                     break
                 if continue_label:
-                    return message, query_seen_list
+                    return message, query_seen_list,docs,dic_question_answer_to_reference
                 else:
-                    return "end", query_seen_list
+                    return "end", query_seen_list,docs,dic_question_answer_to_reference
             if not break_flag:
                 ques_idx += 1
 

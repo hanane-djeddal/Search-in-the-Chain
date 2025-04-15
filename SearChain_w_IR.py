@@ -126,6 +126,8 @@ def excute(data,start_idx,reranker="GTR",resume_from_file=None):
                     """.format(q,q)}]
         feedback_answer = 'continue'
         predict_answer = ''
+        all_docs = []
+        all_intermediates= []
         # sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         # sock.connect((HOST, PORT))
         while round_count < 3 and not feedback_answer == 'end':
@@ -144,7 +146,9 @@ def excute(data,start_idx,reranker="GTR",resume_from_file=None):
             message_keys_list.append({"role": "assistant", "content": rsp_text})
             print('solving......')
             predict_answer += rsp_text #input_str
-            feedback, query_seen_list = interactive_ret.interctive_retrieve(rsp_text,prompt_queries=deepcopy(example_queries))  #sock.send(rsp_text.encode())
+            feedback, query_seen_list,docs,intermediate = interactive_ret.interctive_retrieve(rsp_text,prompt_queries=deepcopy(example_queries))  #sock.send(rsp_text.encode())
+            all_docs.append(docs)
+            all_intermediates.append(intermediate)
             print("query_seen_list",query_seen_list,example_queries)
             example_queries = list(set(example_queries.extend(query_seen_list)))
             print('send message {}'.format(rsp_text))
@@ -179,6 +183,8 @@ def excute(data,start_idx,reranker="GTR",resume_from_file=None):
         #print(message_keys_list)
         print("==== predicted answer:", predict_answer)
         example["output"] = predict_answer
+        example["docs"] = all_docs
+        example["all_intermediates"] = all_intermediates
         example["message"] = message_keys_list
         results.append(example)
 
