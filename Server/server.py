@@ -273,7 +273,10 @@ class Iteractive_Retrieval:
         #start_idx = 0
         with torch.no_grad():
             continue_label = True
-            query_seen_list = prompt_queries #[]
+            if prompt_queries:
+                query_seen_list = prompt_queries #[]
+            else:
+                query_seen_list =[]
             start = True
             break_flag = False
             while continue_label:
