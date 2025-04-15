@@ -254,12 +254,14 @@ class Iteractive_Retrieval:
 
 
     def retrieve_docs(self, question, k=3, docs=None):
+        print("---ret docs",docs)
         if docs:
             return self.rerank_docx(question, k,docs)
         return self.retrieve_docx(question,k)  # google(question) #
     
-    def interctive_retrieve(self, query,prompt_queries=[]):
+    def interctive_retrieve(self, query,prompt_queries=[],docs=None):
         print('Loading data....')
+        print("docs",docs)
         #HOST = "127.0.0.1"#'10.208.62.21'
         #PORT = 8#50007
         #sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -314,7 +316,7 @@ class Iteractive_Retrieval:
                             #res_dic = response.json()
                             #corpus_list_topk = res_dic['topk']
 
-                            corpus_list_topk,docids =self.retrieve_docs(query_item)
+                            corpus_list_topk,docids =self.retrieve_docs(query_item,docs=docs)
                                 
                             print(corpus_list_topk)
                             top1_passage = corpus_list_topk[0]#['text']
