@@ -164,6 +164,7 @@ def excute(data,start_idx,reranker="GTR",resume_from_file=None,dataset="hagrid")
             feedback_list = feedback.split('<SEP>')
             if not 'Unsolved Query' in feedback:
                 feedback_list[0]=feedback_list[0].replace('Unsolved Query','Query')
+                print("edit:",feedback_list[0])
                 new_prompt = """
                 According to this Reference, the answer for "{}" should be "{}",  
                 you can change your answer based on the Reference and continue constructing the reasoning chain to give the final answer for [Question]:{}
