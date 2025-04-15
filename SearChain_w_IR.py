@@ -31,8 +31,8 @@ tokenizer = AutoTokenizer.from_pretrained(LLAMA_PATH)
 model = AutoModelForCausalLM.from_pretrained(
     LLAMA_PATH,
     torch_dtype=torch.float16,
-    device_map="auto"
-).to(device)
+    device_map="auto",
+)#.to(device)
 
 def generate_llama_response(messages):
     """Generates a response using LLaMA-2-Chat."""
