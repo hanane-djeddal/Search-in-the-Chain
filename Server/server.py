@@ -34,7 +34,7 @@ class GTR:
         self.device = device
 
     def rerank(self, query, docs):
-        print(docs[0])
+        #print(docs[0])
         """Encodes query and reranks retrieved documents using GTR embeddings."""
         # Encode the query
         query_emb = self.encoder.encode(query, batch_size=1, normalize_embeddings=True)
@@ -313,10 +313,10 @@ class Iteractive_Retrieval:
                             #response = requests.get(url=url)
                             #res_dic = response.json()
                             #corpus_list_topk = res_dic['topk']
-
+                        
                             corpus_list_topk,docids =self.retrieve_docs(query_item,docs=docs)
                                 
-                            print(corpus_list_topk)
+                            #print(corpus_list_topk)
                             top1_passage = corpus_list_topk[0]#['text']
                             #top1_passage = retrieval_model_hotpotqa.rerank_topk_colbert(corpus_list_topk, query_item)
                             answer,relevance_score = get_answer(query=query_item,texts='',title=top1_passage)
