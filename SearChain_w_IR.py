@@ -214,7 +214,7 @@ if __name__ == '__main__':
     if args.dataset == "hagrid":
         dataset = datasets.load_dataset("miracl/hagrid", split="dev")
     else:
-        with open(args.data_file) as f:
+        with open(args.file) as f:
             dataset = json.load(f)
     start_idx = 0
     #while not start_idx == -1:

@@ -1,0 +1,24 @@
+{
+    "Bleu ": {
+        "bleu_score": 0.47,
+        "precisions": 30.26,
+        "2g": 4.21,
+        "3g": 0.79,
+        "4g": 0.24
+    },
+    "Rouge": {
+        "Precision": 21.7,
+        "Recall": 10.96,
+        "fmeasure": 11.09
+    },
+    "Bert": {
+        "Precision": 81.11,
+        "Recall": 80.93,
+        "fmeasure": 80.99
+    },
+    "Aggregated Rouge": {
+        "Precision": 11.11,
+        "Recall": 11.11,
+        "fmeasure": 11.11
+    }
+}
